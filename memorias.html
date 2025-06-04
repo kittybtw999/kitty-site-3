@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Memórias</title>
+  <style>
+   
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #111;
+      font-family: 'Helvetica Neue', sans-serif;
+      overflow: hidden;
+      color: white;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      width: 100vw;
+      height: 100vh;
+    }
+    .cell {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .cell img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    .cell img.visible {
+      opacity: 1;
+    }
+    .cell img.hidden {
+      opacity: 0 !important;
+    }
+    .message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2em;
+      color: white;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      text-align: center;
+      z-index: 10;
+      white-space: pre-line;
+    }
+    .message.visible {
+      opacity: 1;
+    }
+    #startButton {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 15px 35px;
+      font-size: 1.5em;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      z-index: 10001;
+      user-select: none;
+      transition: background 0.3s ease;
+    }
+    #startButton:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    #optionsContainer {
+      position: fixed;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10001;
+      font-size: 1.3em;
+      display: flex;
+      gap: 40px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #optionsContainer.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #optionsContainer button {
+      padding: 10px 30px;
+      font-size: 1.3em;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s ease;
+    }
+    #optionsContainer button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <button id="startButton">Deseja rever memórias?</button>
+
+  <div id="optionsContainer">
+    <button id="yesBtn">Sim</button>
+    <button id="noBtn">Não</button>
+  </div>
+
+  <div class="grid" style="display:none;">
+    <div class="cell"><img src="imagens/22.png" alt="Imagem 1"></div>
+    <div class="cell"><img src="imagens/image.png" alt="Imagem 2"></div>
+    <div class="cell"><img src="imagens/aaaaa.png" alt="Imagem 3"></div>
+    <div class="cell"><img src="imagens/445235345.png" alt="Imagem 4"></div>
+    <div class="cell"><img src="imagens/445235345.png" alt="Imagem 5"></div>
+    <div class="cell"><img src="imagens/aaaaaaaaaaaaaaaaaaaaaa.png" alt="Imagem 6"></div>
+  </div>
+
+  <div class="message" id="finalMessage"></div>
+
+  <audio id="audio" src="musicas/Tom%20Rosenthal%20(Edith%20Whiskers)%20-%20Home%20(Lyrics).mp3"></audio>
+
+  <script>
+    const startButton = document.getElementById('startButton');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const grid = document.querySelector('.grid');
+    const images = document.querySelectorAll('.cell img');
+    const finalMessage = document.getElementById('finalMessage');
+    const audio = document.getElementById('audio');
+
+    let index = 0;
+
+    startButton.addEventListener('click', () => {
+      startButton.style.display = 'none';
+      optionsContainer.classList.add('visible');
+    });
+
+    noBtn.addEventListener('click', () => {
+      optionsContainer.style.display = 'none';
+      finalMessage.textContent = "Não olhe para o passado,\nsomente para o futuro.";
+      finalMessage.classList.add('visible');
+    });
+
+    yesBtn.addEventListener('click', () => {
+      optionsContainer.style.display = 'none';
+      grid.style.display = 'grid';
+      finalMessage.textContent = '';
+      finalMessage.classList.remove('visible');
+      index = 0;
+      audio.play().catch(() => {
+        console.log("Música não pode tocar automaticamente, interaja com a página.");
+      });
+      showNextImage();
+    });
+
+    function showNextImage() {
+      if (index < images.length) {
+        images[index].classList.add('visible');
+        index++;
+        setTimeout(showNextImage, 1500);
+      } else {
+        setTimeout(() => {
+          images.forEach(img => img.classList.add('hidden'));
+          showMessages();
+        }, 2000);
+      }
+    }
+
+    function showMessages() {
+      const messages = [
+        "Tudo um dia acaba.",
+        "Aproveite enquanto ainda tem chance."
+      ];
+
+      let msgIndex = 0;
+      finalMessage.textContent = messages[msgIndex];
+      finalMessage.classList.add('visible');
+
+      function nextMessage() {
+        msgIndex++;
+        if (msgIndex < messages.length) {
+          finalMessage.textContent = messages[msgIndex];
+          setTimeout(nextMessage, 5000);
+        }
+      }
+
+      setTimeout(nextMessage, 5000);
+    }
+  </script>
+</body>
+</html>
