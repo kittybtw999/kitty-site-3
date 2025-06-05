@@ -327,35 +327,43 @@
 </body>
 </html>
 <head>
-<style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      height: 100%;
-      background: #0a0a0a;
-    }
-
+<title>Efeito de Chuva Transparente</title>
+  <style>
+    /* Faz o canvas cobrir a tela e ficar transparente */
     #rainCanvas {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none; /* Deixa clique passar por ele */
+      z-index: 9999;
     }
   </style>
 </head>
 <body>
+  <!-- Conteúdo do site -->
+  <div style="padding: 50px; font-size: 24px;">
+    <h1>Bem-vindo ao meu site!</h1>
+    <p>O efeito de chuva aparece por cima, mas o conteúdo continua interativo.</p>
+  </div>
+
+  <!-- Canvas da chuva -->
   <canvas id="rainCanvas"></canvas>
 
+  <!-- Script da chuva -->
   <script>
     const canvas = document.getElementById('rainCanvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     const raindrops = [];
-
     for (let i = 0; i < 500; i++) {
       raindrops.push({
         x: Math.random() * canvas.width,
@@ -367,7 +375,7 @@
 
     function drawRain() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = 'rgba(174,194,224,0.5)';
+      ctx.strokeStyle = 'rgba(174,194,224,0.3)';
       ctx.lineWidth = 1;
       ctx.lineCap = 'round';
 
@@ -388,13 +396,7 @@
     }
 
     drawRain();
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
   </script>
 </body>
 </html>
-</head>
  
